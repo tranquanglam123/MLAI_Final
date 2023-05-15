@@ -1,0 +1,2118 @@
+2023/05/15 06:13:42 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: linux
+    Python: 3.10.11 (main, Apr  5 2023, 14:15:10) [GCC 9.4.0]
+    CUDA available: True
+    numpy_random_seed: 48
+    GPU 0: Tesla T4
+    CUDA_HOME: /usr/local/cuda
+    NVCC: Cuda compilation tools, release 11.8, V11.8.89
+    GCC: x86_64-linux-gnu-gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
+    PyTorch: 2.0.0+cu118
+    PyTorch compiling details: PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2022.2-Product Build 20220804 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.7.3 (Git Hash 6dbeffbae1f23cbbeae17adb7b5b13f1f37c080e)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.8
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_90,code=sm_90
+  - CuDNN 8.7
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.8, CUDNN_VERSION=8.7.0, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=0 -fabi-version=11 -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wunused-local-typedefs -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_DISABLE_GPU_ASSERTS=ON, TORCH_VERSION=2.0.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=1, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+    TorchVision: 0.15.1+cu118
+    OpenCV: 4.7.0
+    MMEngine: 0.7.3
+
+Runtime environment:
+    cudnn_benchmark: True
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 0}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 48
+    Distributed launcher: none
+    Distributed training: False
+    GPU number: 1
+------------------------------------------------------------
+
+2023/05/15 06:13:43 - mmengine - INFO - Config:
+default_scope = 'mmseg'
+env_cfg = dict(
+    cudnn_benchmark=True,
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
+    dist_cfg=dict(backend='nccl'))
+vis_backends = [dict(type='LocalVisBackend')]
+visualizer = dict(
+    type='SegLocalVisualizer',
+    vis_backends=[dict(type='LocalVisBackend')],
+    name='visualizer')
+log_processor = dict(by_epoch=True)
+log_level = 'INFO'
+load_from = 'https://download.openmmlab.com/mmsegmentation/v0.5/mask2former/mask2former_r50_8xb2-160k_ade20k-512x512/mask2former_r50_8xb2-160k_ade20k-512x512_20221204_000055-2d1f55f1.pth'
+resume = False
+tta_model = dict(type='SegTTAModel')
+dataset_type = 'ISICTask1Dataset'
+data_root = '/content/dataset'
+crop_size = (512, 512)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations'),
+    dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PackSegInputs')
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations'),
+    dict(type='PackSegInputs')
+]
+img_ratios = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75]
+tta_pipeline = [
+    dict(type='LoadImageFromFile', backend_args=None),
+    dict(
+        type='TestTimeAug',
+        transforms=[[{
+            'type': 'Resize',
+            'scale_factor': 0.5,
+            'keep_ratio': True
+        }, {
+            'type': 'Resize',
+            'scale_factor': 0.75,
+            'keep_ratio': True
+        }, {
+            'type': 'Resize',
+            'scale_factor': 1.0,
+            'keep_ratio': True
+        }, {
+            'type': 'Resize',
+            'scale_factor': 1.25,
+            'keep_ratio': True
+        }, {
+            'type': 'Resize',
+            'scale_factor': 1.5,
+            'keep_ratio': True
+        }, {
+            'type': 'Resize',
+            'scale_factor': 1.75,
+            'keep_ratio': True
+        }],
+                    [{
+                        'type': 'RandomFlip',
+                        'prob': 0.0,
+                        'direction': 'horizontal'
+                    }, {
+                        'type': 'RandomFlip',
+                        'prob': 1.0,
+                        'direction': 'horizontal'
+                    }], [{
+                        'type': 'LoadAnnotations'
+                    }], [{
+                        'type': 'PackSegInputs'
+                    }]])
+]
+train_dataloader = dict(
+    batch_size=2,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='InfiniteSampler', shuffle=True),
+    dataset=dict(
+        type='ISICTask1Dataset',
+        data_root='/content/dataset',
+        data_prefix=dict(
+            img_path='img_dir/ISIC2018_Task1-2_Training_Input',
+            seg_map_path='ann_dir/ISIC2018_Task1_Training_GroundTruth'),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
+            dict(type='RandomFlip', prob=0.5),
+            dict(type='PackSegInputs')
+        ]))
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='ISICTask1Dataset',
+        data_root='/content/dataset',
+        data_prefix=dict(
+            img_path='img_dir/ISIC2018_Task1-2_Validation_Input',
+            seg_map_path='ann_dir/ISIC2018_Task1_Validation_GroundTruth'),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(type='PackSegInputs')
+        ]))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='ISICTask1Dataset',
+        data_root='/content/dataset',
+        data_prefix=dict(
+            img_path='img_dir/ISIC2018_Task1-2_Test_Input',
+            seg_map_path='ann_dir/ISIC2018_Task1_Test_GroundTruth'),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(type='PackSegInputs')
+        ]))
+val_evaluator = dict(type='IoUMetric', iou_metrics=['mIoU'])
+test_evaluator = dict(type='IoUMetric', iou_metrics=['mIoU'])
+custom_imports = dict(imports='mmdet.models', allow_failed_imports=False)
+data_preprocessor = dict(
+    type='SegDataPreProcessor',
+    mean=[123.675, 116.28, 103.53],
+    std=[58.395, 57.12, 57.375],
+    bgr_to_rgb=True,
+    pad_val=0,
+    seg_pad_val=255,
+    size=(512, 512),
+    test_cfg=dict(size_divisor=32))
+num_classes = 2
+model = dict(
+    type='EncoderDecoder',
+    data_preprocessor=dict(
+        type='SegDataPreProcessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_val=0,
+        seg_pad_val=255,
+        size=(512, 512),
+        test_cfg=dict(size_divisor=32)),
+    backbone=dict(
+        type='ResNet',
+        depth=50,
+        deep_stem=False,
+        num_stages=4,
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=-1,
+        norm_cfg=dict(type='SyncBN', requires_grad=False),
+        style='pytorch',
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
+    decode_head=dict(
+        type='Mask2FormerHead',
+        in_channels=[256, 512, 1024, 2048],
+        strides=[4, 8, 16, 32],
+        feat_channels=256,
+        out_channels=256,
+        num_classes=150,
+        num_queries=100,
+        num_transformer_feat_level=3,
+        align_corners=False,
+        pixel_decoder=dict(
+            type='mmdet.MSDeformAttnPixelDecoder',
+            num_outs=3,
+            norm_cfg=dict(type='GN', num_groups=32),
+            act_cfg=dict(type='ReLU'),
+            encoder=dict(
+                num_layers=6,
+                layer_cfg=dict(
+                    self_attn_cfg=dict(
+                        embed_dims=256,
+                        num_heads=8,
+                        num_levels=3,
+                        num_points=4,
+                        im2col_step=64,
+                        dropout=0.0,
+                        batch_first=True,
+                        norm_cfg=None,
+                        init_cfg=None),
+                    ffn_cfg=dict(
+                        embed_dims=256,
+                        feedforward_channels=1024,
+                        num_fcs=2,
+                        ffn_drop=0.0,
+                        act_cfg=dict(type='ReLU', inplace=True))),
+                init_cfg=None),
+            positional_encoding=dict(num_feats=128, normalize=True),
+            init_cfg=None),
+        enforce_decoder_input_project=False,
+        positional_encoding=dict(num_feats=128, normalize=True),
+        transformer_decoder=dict(
+            return_intermediate=True,
+            num_layers=9,
+            layer_cfg=dict(
+                self_attn_cfg=dict(
+                    embed_dims=256,
+                    num_heads=8,
+                    attn_drop=0.0,
+                    proj_drop=0.0,
+                    dropout_layer=None,
+                    batch_first=True),
+                cross_attn_cfg=dict(
+                    embed_dims=256,
+                    num_heads=8,
+                    attn_drop=0.0,
+                    proj_drop=0.0,
+                    dropout_layer=None,
+                    batch_first=True),
+                ffn_cfg=dict(
+                    embed_dims=256,
+                    feedforward_channels=2048,
+                    num_fcs=2,
+                    act_cfg=dict(type='ReLU', inplace=True),
+                    ffn_drop=0.0,
+                    dropout_layer=None,
+                    add_identity=True)),
+            init_cfg=None),
+        loss_cls=dict(
+            type='mmdet.CrossEntropyLoss',
+            use_sigmoid=False,
+            loss_weight=2.0,
+            reduction='mean',
+            class_weight=[
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.1
+            ]),
+        loss_mask=dict(
+            type='mmdet.CrossEntropyLoss',
+            use_sigmoid=True,
+            reduction='mean',
+            loss_weight=5.0),
+        loss_dice=dict(
+            type='mmdet.DiceLoss',
+            use_sigmoid=True,
+            activate=True,
+            reduction='mean',
+            naive_dice=True,
+            eps=1.0,
+            loss_weight=5.0),
+        train_cfg=dict(
+            num_points=12544,
+            oversample_ratio=3.0,
+            importance_sample_ratio=0.75,
+            assigner=dict(
+                type='mmdet.HungarianAssigner',
+                match_costs=[
+                    dict(type='mmdet.ClassificationCost', weight=2.0),
+                    dict(
+                        type='mmdet.CrossEntropyLossCost',
+                        weight=5.0,
+                        use_sigmoid=True),
+                    dict(
+                        type='mmdet.DiceCost',
+                        weight=5.0,
+                        pred_act=True,
+                        eps=1.0)
+                ]),
+            sampler=dict(type='mmdet.MaskPseudoSampler'))),
+    train_cfg=dict(),
+    test_cfg=dict(mode='whole'))
+embed_multi = dict(lr_mult=1.0, decay_mult=0.0)
+optimizer = dict(
+    type='AdamW', lr=0.0001, weight_decay=0.05, eps=1e-08, betas=(0.9, 0.999))
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(
+        type='AdamW',
+        lr=0.0001,
+        weight_decay=0.05,
+        eps=1e-08,
+        betas=(0.9, 0.999)),
+    clip_grad=dict(max_norm=0.01, norm_type=2),
+    paramwise_cfg=dict(
+        custom_keys=dict(
+            backbone=dict(lr_mult=0.1, decay_mult=1.0),
+            query_embed=dict(lr_mult=1.0, decay_mult=0.0),
+            query_feat=dict(lr_mult=1.0, decay_mult=0.0),
+            level_embed=dict(lr_mult=1.0, decay_mult=0.0)),
+        norm_decay_mult=0.0))
+param_scheduler = [
+    dict(type='LinearLR', by_epoch=False, start_factor=0.1, begin=0, end=100),
+    dict(
+        type='PolyLR',
+        eta_min=0.0001,
+        power=0.9,
+        begin=0,
+        end=160,
+        by_epoch=False)
+]
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=5, val_begin=1, val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+default_hooks = dict(
+    timer=dict(type='IterTimerHook'),
+    logger=dict(type='LoggerHook', interval=50, log_metric_by_epoch=False),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    checkpoint=dict(type='CheckpointHook', interval=250, by_epoch=False),
+    sampler_seed=dict(type='DistSamplerSeedHook'))
+auto_scale_lr = dict(enable=False, base_batch_size=16)
+work_dir = './work_dirs/tutorial'
+randomness = dict(seed=48)
+
+2023/05/15 06:13:44 - mmengine - INFO - Distributed training is not used, all SyncBatchNorm (SyncBN) layers in the model will be automatically reverted to BatchNormXd layers if they are used.
+2023/05/15 06:13:44 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train:
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv3.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.downsample.0.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.downsample.0.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.downsample.0.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.0.downsample.0.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv3.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.1.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv3.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer1.2.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv3.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.downsample.0.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.downsample.0.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.downsample.0.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.0.downsample.0.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv3.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.1.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv3.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.2.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv3.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer2.3.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv1.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv2.weight:lr=1e-05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:03 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.downsample.0.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.downsample.0.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.downsample.0.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.0.downsample.0.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.1.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.2.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.3.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.4.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer3.5.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.downsample.0.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.downsample.0.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.downsample.0.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.0.downsample.0.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.1.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv1.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv1.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv1.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv1.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv2.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv2.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv2.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv2.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv3.weight:lr=1e-05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv3.weight:weight_decay=0.05
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv3.weight:lr_mult=0.1
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- backbone.layer4.2.conv3.weight:decay_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.input_convs.0.gn.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.input_convs.0.gn.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.input_convs.1.gn.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.input_convs.1.gn.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.input_convs.2.gn.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.input_convs.2.gn.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.0.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.0.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.0.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.0.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.1.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.1.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.1.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.1.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.2.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.2.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.2.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.2.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.3.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.3.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.3.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.3.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.4.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.4.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.4.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.4.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.5.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.5.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.5.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.encoder.layers.5.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.lateral_convs.0.gn.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.lateral_convs.0.gn.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.output_convs.0.gn.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.pixel_decoder.output_convs.0.gn.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.0.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.0.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.0.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.0.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.0.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.0.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.1.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.1.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.1.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.1.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.1.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.1.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.2.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.2.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.2.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.2.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.2.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.2.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.3.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.3.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.3.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.3.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.3.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.3.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.4.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.4.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.4.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.4.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.4.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.4.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.5.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.5.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.5.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.5.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.5.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.5.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.6.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.6.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.6.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.6.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.6.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.6.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.7.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.7.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.7.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.7.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.7.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.7.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.8.norms.0.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.8.norms.0.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.8.norms.1.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.8.norms.1.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.8.norms.2.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.layers.8.norms.2.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.post_norm.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.transformer_decoder.post_norm.bias:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_embed.weight:lr=0.0001
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_embed.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_embed.weight:lr_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_embed.weight:decay_mult=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_feat.weight:lr=0.0001
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_feat.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_feat.weight:lr_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.query_feat.weight:decay_mult=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.level_embed.weight:lr=0.0001
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.level_embed.weight:weight_decay=0.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.level_embed.weight:lr_mult=1.0
+2023/05/15 06:14:04 - mmengine - INFO - paramwise_options -- decode_head.level_embed.weight:decay_mult=0.0
+2023/05/15 06:14:04 - mmengine - WARNING - The prefix is not set in metric class IoUMetric.
+2023/05/15 06:14:05 - mmengine - INFO - load model from: torchvision://resnet50
+2023/05/15 06:14:05 - mmengine - INFO - Loads checkpoint by torchvision backend from path: torchvision://resnet50
+2023/05/15 06:14:06 - mmengine - WARNING - The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: fc.weight, fc.bias
+
+Name of parameter - Initialization information
+
+backbone.conv1.weight - torch.Size([64, 3, 7, 7]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.bn1.weight - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.bn1.bias - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.conv1.weight - torch.Size([64, 64, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.bn1.weight - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.bn1.bias - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.conv2.weight - torch.Size([64, 64, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.bn2.weight - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.bn2.bias - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.conv3.weight - torch.Size([256, 64, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.bn3.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.bn3.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.downsample.0.weight - torch.Size([256, 64, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.downsample.1.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.0.downsample.1.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.conv1.weight - torch.Size([64, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.bn1.weight - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.bn1.bias - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.conv2.weight - torch.Size([64, 64, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.bn2.weight - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.bn2.bias - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.conv3.weight - torch.Size([256, 64, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.bn3.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.1.bn3.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.conv1.weight - torch.Size([64, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.bn1.weight - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.bn1.bias - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.conv2.weight - torch.Size([64, 64, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.bn2.weight - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.bn2.bias - torch.Size([64]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.conv3.weight - torch.Size([256, 64, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.bn3.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer1.2.bn3.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.conv1.weight - torch.Size([128, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.bn1.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.bn1.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.conv2.weight - torch.Size([128, 128, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.bn2.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.bn2.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.conv3.weight - torch.Size([512, 128, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.bn3.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.bn3.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.downsample.0.weight - torch.Size([512, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.downsample.1.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.0.downsample.1.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.conv1.weight - torch.Size([128, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.bn1.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.bn1.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.conv2.weight - torch.Size([128, 128, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.bn2.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.bn2.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.conv3.weight - torch.Size([512, 128, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.bn3.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.1.bn3.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.conv1.weight - torch.Size([128, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.bn1.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.bn1.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.conv2.weight - torch.Size([128, 128, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.bn2.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.bn2.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.conv3.weight - torch.Size([512, 128, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.bn3.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.2.bn3.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.conv1.weight - torch.Size([128, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.bn1.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.bn1.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.conv2.weight - torch.Size([128, 128, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.bn2.weight - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.bn2.bias - torch.Size([128]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.conv3.weight - torch.Size([512, 128, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.bn3.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer2.3.bn3.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.conv1.weight - torch.Size([256, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.bn1.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.bn1.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.conv2.weight - torch.Size([256, 256, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.bn2.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.bn2.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.bn3.weight - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.bn3.bias - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.downsample.0.weight - torch.Size([1024, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.downsample.1.weight - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.0.downsample.1.bias - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.bn1.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.bn1.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.conv2.weight - torch.Size([256, 256, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.bn2.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.bn2.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.bn3.weight - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.1.bn3.bias - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.bn1.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.bn1.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.conv2.weight - torch.Size([256, 256, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.bn2.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.bn2.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.bn3.weight - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.2.bn3.bias - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.bn1.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.bn1.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.conv2.weight - torch.Size([256, 256, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.bn2.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.bn2.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.bn3.weight - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.3.bn3.bias - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.bn1.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.bn1.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.conv2.weight - torch.Size([256, 256, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.bn2.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.bn2.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.bn3.weight - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.4.bn3.bias - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.bn1.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.bn1.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.conv2.weight - torch.Size([256, 256, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.bn2.weight - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.bn2.bias - torch.Size([256]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.bn3.weight - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer3.5.bn3.bias - torch.Size([1024]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.conv1.weight - torch.Size([512, 1024, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.bn1.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.bn1.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.conv2.weight - torch.Size([512, 512, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.bn2.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.bn2.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.bn3.weight - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.bn3.bias - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.downsample.0.weight - torch.Size([2048, 1024, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.downsample.1.weight - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.0.downsample.1.bias - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.bn1.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.bn1.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.conv2.weight - torch.Size([512, 512, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.bn2.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.bn2.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.bn3.weight - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.1.bn3.bias - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.bn1.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.bn1.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.conv2.weight - torch.Size([512, 512, 3, 3]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.bn2.weight - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.bn2.bias - torch.Size([512]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.bn3.weight - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+backbone.layer4.2.bn3.bias - torch.Size([2048]): 
+PretrainedInit: load from torchvision://resnet50 
+
+decode_head.pixel_decoder.input_convs.0.conv.weight - torch.Size([256, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.input_convs.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.1.conv.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.input_convs.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.1.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.1.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.2.conv.weight - torch.Size([256, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.input_convs.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.2.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.input_convs.2.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.sampling_offsets.weight - torch.Size([192, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.sampling_offsets.bias - torch.Size([192]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.attention_weights.weight - torch.Size([96, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.attention_weights.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.0.self_attn.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.ffn.layers.0.0.weight - torch.Size([1024, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.0.ffn.layers.0.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.ffn.layers.1.weight - torch.Size([256, 1024]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.0.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.0.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.sampling_offsets.weight - torch.Size([192, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.sampling_offsets.bias - torch.Size([192]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.attention_weights.weight - torch.Size([96, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.attention_weights.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.1.self_attn.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.ffn.layers.0.0.weight - torch.Size([1024, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.1.ffn.layers.0.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.ffn.layers.1.weight - torch.Size([256, 1024]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.1.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.1.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.sampling_offsets.weight - torch.Size([192, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.sampling_offsets.bias - torch.Size([192]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.attention_weights.weight - torch.Size([96, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.attention_weights.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.2.self_attn.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.ffn.layers.0.0.weight - torch.Size([1024, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.2.ffn.layers.0.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.ffn.layers.1.weight - torch.Size([256, 1024]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.2.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.2.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.sampling_offsets.weight - torch.Size([192, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.sampling_offsets.bias - torch.Size([192]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.attention_weights.weight - torch.Size([96, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.attention_weights.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.3.self_attn.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.ffn.layers.0.0.weight - torch.Size([1024, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.3.ffn.layers.0.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.ffn.layers.1.weight - torch.Size([256, 1024]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.3.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.3.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.sampling_offsets.weight - torch.Size([192, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.sampling_offsets.bias - torch.Size([192]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.attention_weights.weight - torch.Size([96, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.attention_weights.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.4.self_attn.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.ffn.layers.0.0.weight - torch.Size([1024, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.4.ffn.layers.0.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.ffn.layers.1.weight - torch.Size([256, 1024]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.4.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.4.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.sampling_offsets.weight - torch.Size([192, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.sampling_offsets.bias - torch.Size([192]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.attention_weights.weight - torch.Size([96, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.attention_weights.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.5.self_attn.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.ffn.layers.0.0.weight - torch.Size([1024, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.5.ffn.layers.0.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.ffn.layers.1.weight - torch.Size([256, 1024]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.encoder.layers.5.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.encoder.layers.5.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.level_encoding.weight - torch.Size([3, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.lateral_convs.0.conv.weight - torch.Size([256, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.lateral_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.lateral_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.output_convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.output_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.output_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.pixel_decoder.mask_feature.weight - torch.Size([256, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.pixel_decoder.mask_feature.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.0.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.0.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.0.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.0.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.0.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.0.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.0.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.0.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.1.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.1.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.1.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.1.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.1.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.1.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.1.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.2.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.2.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.2.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.2.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.2.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.2.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.2.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.3.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.3.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.3.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.3.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.3.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.3.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.3.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.4.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.4.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.4.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.4.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.4.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.4.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.4.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.5.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.5.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.5.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.5.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.5.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.5.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.5.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.6.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.6.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.6.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.6.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.6.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.6.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.6.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.7.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.7.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.7.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.7.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.7.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.7.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.7.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.self_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.8.self_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.self_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.8.self_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.cross_attn.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.8.cross_attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.cross_attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.8.cross_attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.ffn.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.8.ffn.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.ffn.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in Mask2FormerHead  
+
+decode_head.transformer_decoder.layers.8.ffn.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.layers.8.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.post_norm.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.transformer_decoder.post_norm.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.query_embed.weight - torch.Size([100, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.query_feat.weight - torch.Size([100, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.level_embed.weight - torch.Size([3, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cls_embed.weight - torch.Size([151, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cls_embed.bias - torch.Size([151]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.mask_embed.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.mask_embed.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.mask_embed.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.mask_embed.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.mask_embed.4.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.mask_embed.4.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+2023/05/15 06:14:07 - mmengine - INFO - Load checkpoint from https://download.openmmlab.com/mmsegmentation/v0.5/mask2former/mask2former_r50_8xb2-160k_ade20k-512x512/mask2former_r50_8xb2-160k_ade20k-512x512_20221204_000055-2d1f55f1.pth
+2023/05/15 06:14:07 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+2023/05/15 06:14:07 - mmengine - INFO - Checkpoints will be saved to /content/mmsegmentation/work_dirs/tutorial.
+2023/05/15 06:14:40 - mmengine - INFO - Epoch(train) [1][  50/1297]  lr: 5.6271e-05  eta: 1:10:30  time: 0.5179  data_time: 0.0066  memory: 12414  grad_norm: 1339.7187  loss: 33.2108  decode.loss_cls: 0.8830  decode.loss_mask: 1.4788  decode.loss_dice: 0.9100  decode.d0.loss_cls: 1.5447  decode.d0.loss_mask: 1.5139  decode.d0.loss_dice: 1.0889  decode.d1.loss_cls: 0.7972  decode.d1.loss_mask: 1.3640  decode.d1.loss_dice: 0.9319  decode.d2.loss_cls: 0.8715  decode.d2.loss_mask: 1.4137  decode.d2.loss_dice: 0.8768  decode.d3.loss_cls: 0.8350  decode.d3.loss_mask: 1.5273  decode.d3.loss_dice: 0.9425  decode.d4.loss_cls: 0.7622  decode.d4.loss_mask: 1.4458  decode.d4.loss_dice: 0.9135  decode.d5.loss_cls: 0.7929  decode.d5.loss_mask: 1.4460  decode.d5.loss_dice: 0.9084  decode.d6.loss_cls: 0.8642  decode.d6.loss_mask: 1.4773  decode.d6.loss_dice: 0.9489  decode.d7.loss_cls: 1.0088  decode.d7.loss_mask: 1.4004  decode.d7.loss_dice: 0.9548  decode.d8.loss_cls: 0.8439  decode.d8.loss_mask: 1.5393  decode.d8.loss_dice: 0.9254
+2023/05/15 06:15:05 - mmengine - INFO - Epoch(train) [1][ 100/1297]  lr: 1.1245e-04  eta: 1:02:02  time: 0.5003  data_time: 0.0063  memory: 11138  grad_norm: 420.2290  loss: 21.9548  decode.loss_cls: 0.3850  decode.loss_mask: 1.0280  decode.loss_dice: 0.5653  decode.d0.loss_cls: 0.7373  decode.d0.loss_mask: 1.2310  decode.d0.loss_dice: 0.5971  decode.d1.loss_cls: 0.6011  decode.d1.loss_mask: 1.0349  decode.d1.loss_dice: 0.5246  decode.d2.loss_cls: 0.8415  decode.d2.loss_mask: 1.0261  decode.d2.loss_dice: 0.5498  decode.d3.loss_cls: 0.6930  decode.d3.loss_mask: 1.0591  decode.d3.loss_dice: 0.5205  decode.d4.loss_cls: 0.5727  decode.d4.loss_mask: 1.1300  decode.d4.loss_dice: 0.5207  decode.d5.loss_cls: 0.4379  decode.d5.loss_mask: 1.1295  decode.d5.loss_dice: 0.5543  decode.d6.loss_cls: 0.3672  decode.d6.loss_mask: 1.1803  decode.d6.loss_dice: 0.5473  decode.d7.loss_cls: 0.3367  decode.d7.loss_mask: 1.1877  decode.d7.loss_dice: 0.5403  decode.d8.loss_cls: 0.2981  decode.d8.loss_mask: 1.1682  decode.d8.loss_dice: 0.5896
+2023/05/15 06:15:30 - mmengine - INFO - Epoch(train) [1][ 150/1297]  lr: 1.0248e-04  eta: 0:59:00  time: 0.4992  data_time: 0.0057  memory: 11138  grad_norm: 382.9837  loss: 24.7624  decode.loss_cls: 0.2945  decode.loss_mask: 1.6205  decode.loss_dice: 0.6896  decode.d0.loss_cls: 0.6516  decode.d0.loss_mask: 1.3033  decode.d0.loss_dice: 0.6027  decode.d1.loss_cls: 0.3895  decode.d1.loss_mask: 1.2945  decode.d1.loss_dice: 0.6212  decode.d2.loss_cls: 0.4279  decode.d2.loss_mask: 1.2910  decode.d2.loss_dice: 0.7419  decode.d3.loss_cls: 0.3635  decode.d3.loss_mask: 1.3525  decode.d3.loss_dice: 0.6618  decode.d4.loss_cls: 0.4472  decode.d4.loss_mask: 1.2624  decode.d4.loss_dice: 0.6840  decode.d5.loss_cls: 0.6358  decode.d5.loss_mask: 1.3081  decode.d5.loss_dice: 0.7077  decode.d6.loss_cls: 0.7644  decode.d6.loss_mask: 1.2465  decode.d6.loss_dice: 0.6605  decode.d7.loss_cls: 0.4979  decode.d7.loss_mask: 1.3213  decode.d7.loss_dice: 0.6646  decode.d8.loss_cls: 0.3727  decode.d8.loss_mask: 1.2481  decode.d8.loss_dice: 0.6351
+2023/05/15 06:15:56 - mmengine - INFO - Epoch(train) [1][ 200/1297]  lr: 1.0000e-04  eta: 0:57:21  time: 0.5238  data_time: 0.0061  memory: 11138  grad_norm: 309.9679  loss: 20.2524  decode.loss_cls: 0.3639  decode.loss_mask: 1.1705  decode.loss_dice: 0.6150  decode.d0.loss_cls: 0.6202  decode.d0.loss_mask: 1.0193  decode.d0.loss_dice: 0.5258  decode.d1.loss_cls: 0.3314  decode.d1.loss_mask: 0.9175  decode.d1.loss_dice: 0.4043  decode.d2.loss_cls: 0.2821  decode.d2.loss_mask: 1.0763  decode.d2.loss_dice: 0.4000  decode.d3.loss_cls: 0.3523  decode.d3.loss_mask: 1.3477  decode.d3.loss_dice: 0.4751  decode.d4.loss_cls: 0.3426  decode.d4.loss_mask: 1.1511  decode.d4.loss_dice: 0.4193  decode.d5.loss_cls: 0.3098  decode.d5.loss_mask: 1.1301  decode.d5.loss_dice: 0.5781  decode.d6.loss_cls: 0.3176  decode.d6.loss_mask: 1.0803  decode.d6.loss_dice: 0.6571  decode.d7.loss_cls: 0.2512  decode.d7.loss_mask: 1.2880  decode.d7.loss_dice: 0.7152  decode.d8.loss_cls: 0.3676  decode.d8.loss_mask: 1.1515  decode.d8.loss_dice: 0.5914
+2023/05/15 06:16:22 - mmengine - INFO - Epoch(train) [1][ 250/1297]  lr: 1.0000e-04  eta: 0:56:09  time: 0.5358  data_time: 0.0063  memory: 11138  grad_norm: 292.7060  loss: 21.4084  decode.loss_cls: 0.3502  decode.loss_mask: 1.2420  decode.loss_dice: 0.5946  decode.d0.loss_cls: 0.5346  decode.d0.loss_mask: 1.3155  decode.d0.loss_dice: 0.6645  decode.d1.loss_cls: 0.2854  decode.d1.loss_mask: 1.1872  decode.d1.loss_dice: 0.5370  decode.d2.loss_cls: 0.2740  decode.d2.loss_mask: 1.2564  decode.d2.loss_dice: 0.5947  decode.d3.loss_cls: 0.2631  decode.d3.loss_mask: 1.2423  decode.d3.loss_dice: 0.5732  decode.d4.loss_cls: 0.2772  decode.d4.loss_mask: 1.2059  decode.d4.loss_dice: 0.6000  decode.d5.loss_cls: 0.2784  decode.d5.loss_mask: 1.2319  decode.d5.loss_dice: 0.5617  decode.d6.loss_cls: 0.2929  decode.d6.loss_mask: 1.2678  decode.d6.loss_dice: 0.5497  decode.d7.loss_cls: 0.2879  decode.d7.loss_mask: 1.2429  decode.d7.loss_dice: 0.5588  decode.d8.loss_cls: 0.3047  decode.d8.loss_mask: 1.2549  decode.d8.loss_dice: 0.5787
+2023/05/15 06:16:22 - mmengine - INFO - Saving checkpoint at 250 iterations
+2023/05/15 06:16:50 - mmengine - INFO - Epoch(train) [1][ 300/1297]  lr: 1.0000e-04  eta: 0:56:08  time: 0.5318  data_time: 0.0063  memory: 11138  grad_norm: 385.6709  loss: 19.4739  decode.loss_cls: 0.1612  decode.loss_mask: 0.9931  decode.loss_dice: 0.4620  decode.d0.loss_cls: 0.4613  decode.d0.loss_mask: 1.0661  decode.d0.loss_dice: 0.8061  decode.d1.loss_cls: 0.4431  decode.d1.loss_mask: 0.9629  decode.d1.loss_dice: 0.6548  decode.d2.loss_cls: 0.3061  decode.d2.loss_mask: 0.9749  decode.d2.loss_dice: 0.5221  decode.d3.loss_cls: 0.3652  decode.d3.loss_mask: 0.9791  decode.d3.loss_dice: 0.5554  decode.d4.loss_cls: 0.4032  decode.d4.loss_mask: 0.9673  decode.d4.loss_dice: 0.4869  decode.d5.loss_cls: 0.3307  decode.d5.loss_mask: 0.9817  decode.d5.loss_dice: 0.5625  decode.d6.loss_cls: 0.2760  decode.d6.loss_mask: 1.0113  decode.d6.loss_dice: 0.5381  decode.d7.loss_cls: 0.2467  decode.d7.loss_mask: 1.3486  decode.d7.loss_dice: 0.7168  decode.d8.loss_cls: 0.1881  decode.d8.loss_mask: 1.1698  decode.d8.loss_dice: 0.5329
