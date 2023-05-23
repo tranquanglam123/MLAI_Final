@@ -8,7 +8,7 @@ visualizer = dict(
     type='SegLocalVisualizer',
     vis_backends=[dict(type='LocalVisBackend')],
     name='visualizer')
-log_processor = dict(by_epoch=False)
+log_processor = dict(by_epoch=True)
 log_level = 'INFO'
 load_from = 'https://download.openmmlab.com/mmsegmentation/v0.5/mask2former/mask2former_r50_8xb2-160k_ade20k-512x512/mask2former_r50_8xb2-160k_ade20k-512x512_20221204_000055-2d1f55f1.pth'
 resume = False
@@ -108,7 +108,7 @@ val_dataloader = dict(
         ]))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=4,
+    num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -155,7 +155,7 @@ model = dict(
         frozen_stages=-1,
         norm_cfg=dict(type='SyncBN', requires_grad=False),
         style='pytorch',
-        init_cfg=None),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
     decode_head=dict(
         type='Mask2FormerHead',
         in_channels=[256, 512, 1024, 2048],
@@ -275,8 +275,7 @@ model = dict(
                 ]),
             sampler=dict(type='mmdet.MaskPseudoSampler'))),
     train_cfg=dict(),
-    test_cfg=dict(mode='whole'),
-    pretrained='/content/mmsegmentation/work_dirs/tutorial/iter_300.pth')
+    test_cfg=dict(mode='whole'))
 embed_multi = dict(lr_mult=1.0, decay_mult=0.0)
 optimizer = dict(
     type='AdamW', lr=0.0001, weight_decay=0.05, eps=1e-08, betas=(0.9, 0.999))
@@ -307,7 +306,7 @@ param_scheduler = [
         by_epoch=False)
 ]
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=5, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=5, val_begin=1, val_interval=1000)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 default_hooks = dict(
@@ -318,3 +317,4 @@ default_hooks = dict(
     sampler_seed=dict(type='DistSamplerSeedHook'))
 auto_scale_lr = dict(enable=False, base_batch_size=16)
 work_dir = './work_dirs/tutorial'
+randomness = dict(seed=48)
